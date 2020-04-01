@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>To do list</title>
+	<style type="text/css">
+		ul li {
+  			background: #cce5ff;
+  			margin: 10px;
+  			width: 90%;
+  			text-align: left;
+		}
+		.del_btn {
+			display: inline;
+		}
+		.bg_frame{
+			width: 600px;
+			background-color: #EFEFEF;
+			margin: 0 auto;
+			text-align: center;
+		}
+		input.del {
+		  float: right;
+		  clear: both;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="bg_frame">
+		<H1> Here is view from template TODO</H1>
+
+<div width=400px>
+	<ul>
+		{% for todo_item in all_items %}
+			<li class="li_item">{{ todo_item.content }}
+
+				<form action="/deleteTodo/{{todo_item.id}}/" 
+						method="post"
+						class="del_btn"
+						>{% csrf_token %}
+					<input type="submit" value="Delete" class="del">
+				</form>
+			</li>
+			
+		{% endfor %}
+	</ul>
+</div>
+
+	<form action="/addTodo/" method="post" class="add_form">{% csrf_token %}
+		<input type="text" name="content">
+		<input type="submit" value="Add">
+	</form>
+</div>
+</body>
+</html>
