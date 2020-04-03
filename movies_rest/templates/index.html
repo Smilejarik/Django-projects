@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Films App</title>
+	
+</head>
+
+<body>
+	<div class="bg_frame">
+		<H1> Here is start page for Movies App</H1>
+
+<div width=400px>
+	<ul>
+		{% for movie in all_movies %}
+			<li class="li_item">Movie is: {{ movie.title }}, author: {{ movie.author }}</li>
+			
+		{% endfor %}
+	</ul>
+</div>
+
+	<form action="/movies/" method="post" class="add_form">{% csrf_token %}
+		<input type="text" name="movie_title">
+		<input type="submit" value="Add">
+	</form>
+</div>
+</body>
+</html>
