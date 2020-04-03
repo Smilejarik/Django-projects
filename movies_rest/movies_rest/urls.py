@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from movies_lib.views import handleMovies, handleComments, topMovies
+from movies_lib.views import handle_movies, handle_comments, top_movies
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('movies/', handleMovies),
-    path('comments/', handleComments),
-    path('top/<int:todo_id>/', topMovies),
+    path('movies/', handle_movies),
+    path('comments/', handle_comments),
+    path('top/<int:todo_id>/', top_movies),
 ]
