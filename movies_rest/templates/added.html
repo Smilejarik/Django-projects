@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+	<div width=400px>
+		<p> {{ new_movie }} </p>
+		<h2>Movie added:</h2>
+		<ul>
+			{% for key, value in new_movie.items %}
+				<li class="li_item">{{ key }} is: {{ value }}</li>
+
+			{% endfor %}
+		</ul>
+	</div>
+{% endblock content %}

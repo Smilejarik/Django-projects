@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Movies App</title>
+	
+</head>
+
+<body>
+	<div class="bg_frame">
+		<H1>Movies App</H1>
+		<p>
+			<a href="movies/">Movies</a> |
+			<a href="comments/">Comments</a> |
+			<a href="top/">Top Movies</a>
+		</p>
+
+		{% block content %}{% endblock %}
+
+		<form action="/movies/" method="post" class="add_form">{% csrf_token %}
+			<input type="text" name="movie_title" required>
+			<input type="submit" value="Add Movie">
+		</form>
+	</div>
+</body>
+</html>

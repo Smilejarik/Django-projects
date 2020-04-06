@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+	<div class="bg_frame">
+		<H2>Movies in database:</H2>
+
+		<div width=400px>
+			<ul>
+				{% for movie in all_movies %}
+					<li class="li_item">{{ movie.id }}. Movie is: {{ movie.title }}, ({{ movie.year }}) Director: {{ movie.director }}</li>
+
+				{% endfor %}
+			</ul>
+		</div>
+
+		<p>
+			<fieldset>
+			  <legend>Add Comment</legend>
+					<textarea form="post_comment" cols="50" name="comment_body" required></textarea>
+					<form id="post_comment" action="/comments/" method="post" class="add_form">{% csrf_token %}
+						<label>Movie id:</label>
+							 <select name="movie_id" required>
+								 {% for movie in all_movies %}
+							   		<option value = "{{ movie.id }}">{{ movie.id }}</option>
+								 {% endfor %}
+							 </select>
+						<input type="submit" value="Add Comment">
+					</form>
+			</fieldset>
+		</p>
+	</div>
+{% endblock content %}
