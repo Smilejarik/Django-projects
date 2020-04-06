@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+	<div class="bg_frame">
+		<H2>Movies Top list:</H2>
+
+		<div width=400px>
+            <fieldset>
+			  <legend>Filter by years</legend>
+                <form action="/top/" method="post" class="add_form">{% csrf_token %}
+                    <input type="number" name="start_range" min="4" maxlength="4" required> -
+                    <input type="number" name="end_range" min="4" maxlength="4" required>
+                    <input type="submit" value="Filter Movies">
+                </form>
+            </fieldset>
+            <p>{{ top_array }}</p>
+            {% for item in top_array %}
+                    <p>{{ item }}</p>
+            {% endfor %}
+		</div>
+	</div>
+{% endblock content %}

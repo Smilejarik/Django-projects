@@ -15,12 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from movies_lib.views import handle_movies, handle_comments, sort_by_movie, top_movies
+from movies_lib.views import handle_movies, handle_comments, filter_by_movie, top_movies
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # admin pass=demo123
     path('movies/', handle_movies),
     path('comments/', handle_comments),
-    path('comments/<int:movie_id>', sort_by_movie),
-    path('top/<int:todo_id>/', top_movies),
+    path('comments/<int:movie_id>', filter_by_movie),
+    path('top/', top_movies),
 ]

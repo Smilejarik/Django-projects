@@ -2,16 +2,23 @@
 <html>
 <head>
 	<title>Movies App</title>
-	
+	<style>
+		input[type=number]{
+    		width: 50px;
+		}
+		.filter_btn {
+			display: inline;
+		}
+	</style>
 </head>
 
 <body>
 	<div class="bg_frame">
 		<H1>Movies App</H1>
 		<p>
-			<a href="movies/">Movies</a> |
-			<a href="comments/">Comments</a> |
-			<a href="top/">Top Movies</a>
+			<a href="/movies/">Movies</a> |
+			<a href="/comments/">Comments</a> |
+			<a href="/top/">Top Movies</a>
 		</p>
 
 		{% block content %}{% endblock %}

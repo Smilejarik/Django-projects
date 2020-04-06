@@ -8,6 +8,12 @@
 				{% if all_comments %}
 					{% for comment in all_comments %}
 						<li class="li_item">Movie is: {{ comment.movie_id }}, date posted: {{ comment.date }}
+							<form action="/comments/{{comment.movie_id.id}}"
+								method="post"
+								class="filter_btn"
+								>{% csrf_token %}
+								<input type="submit" value="Show all" class="filter">
+							</form>
 							<p> Comment: {{ comment.body }}</li>
 
 					{% endfor %}

@@ -10,6 +10,11 @@ api_key = 'apikey=8a9a1640'
 def handle_movies(request):
 	all_movies = MovieItem.objects.all()
 
+	try:
+		all_movies = all_movies.order_by(request.POST['sorting_way'])
+	except Exception:
+		pass
+
 	# request from external api on POST
 	if request.method == 'POST':
 		title_to_add = request.POST['movie_title']
@@ -33,9 +38,9 @@ def handle_movies(request):
 		except Exception:
 			return HttpResponse("<h2>No such movie in DB</h2>")
 		
-		return render(request, "added.html", {'new_movie': json_data})
-	elif request.method == "GET":
-		return render(request, "movies.html", {'all_movies': all_movies})
+		#return render(request, "added.html", {'new_movie': json_data})
+
+	return render(request, "movies.html", {'all_movies': all_movies})
 
 
 def handle_comments(request):
@@ -64,7 +69,7 @@ def handle_comments(request):
 	return render(request, "comments.html", {'all_comments': all_comments})
 
 
-def sort_by_movie(request, movie_id):
+def filter_by_movie(request, movie_id):
 	try:
 		movie = MovieItem.objects.get(pk=movie_id)
 		movie_comments = CommentItem.objects.filter(movie_id=movie)
@@ -74,11 +79,43 @@ def sort_by_movie(request, movie_id):
 		return HttpResponse("<h3>Error: No such movie</h3>")
 
 
-def top_movies(request, todo_id):
-	pass
-	# delete a new todo to add to all_items
-	item_to_delete = TodoItem.objects.get(id=todo_id)
-	# save
-	item_to_delete.delete()
-	# redirect the browser to "/todo/"
-	return HttpResponseRedirect("/todo/")
+def top_movies(request):
+	if request.method == "POST":
+		try:
+			start_range = 0000
+			end_range = 9999
+			start_range = int(request.POST['start_range'])
+			end_range = int(request.POST['end_range'])
+			all_movies = MovieItem.objects.filter(year__range=[start_range, end_range])
+		except Exception:
+			return HttpResponse("<h3>Error: incorrect range</h3>")
+	else:
+		all_movies = MovieItem.objects.all()
+
+	if len(all_movies) == 0:
+		return HttpResponse("<h3>Error: no movies in this range</h3>")
+	all_movies = all_movies.order_by('-commentitem')
+
+	curr_comments = all_movies[0].commentitem_set.count()  # define max nr of comments for first place
+	curr_movie = None  # define first movie as null to avoid duplicates
+	top_array = []
+	rank = 1
+	for movie in all_movies:
+		if movie == curr_movie:
+			continue
+		curr_movie = movie
+
+		nr_comments = movie.commentitem_set.count()
+		if nr_comments < curr_comments:
+			curr_comments = nr_comments
+			rank += 1
+
+		movie_rank = {
+			"movie_id": movie.id,
+			"total_comments": nr_comments,
+			"rank": rank
+		}
+
+		top_array.append(movie_rank)
+
+	return render(request, "top.html", {'top_array': top_array})
