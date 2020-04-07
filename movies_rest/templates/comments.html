@@ -7,22 +7,21 @@
 			<ul>
 				{% if all_comments %}
 					{% for comment in all_comments %}
-						<li class="li_item">Movie is: {{ comment.movie_id }}, date posted: {{ comment.date }}
+				<li class="li_item">Movie is: <b>{{ comment.movie_id }}</b>, date posted: {{ comment.date }}
 							<form action="/comments/{{comment.movie_id.id}}"
 								method="post"
 								class="filter_btn"
 								>{% csrf_token %}
 								<input type="submit" value="Show all" class="filter">
 							</form>
-							<p> Comment: {{ comment.body }}</li>
+					<p> Comment: <i>{{ comment.body }}</i></li>
 
 					{% endfor %}
 				{% elif movie_comments %}
-					<h3>Movie is: {{ movie_comments.0.movie_id }}</h3>
-
+				<h3>Movie is: {{ movie_comments.0.movie_id }}</h3>
 					{% for comment in movie_comments %}
 						<li class="li_item">Date posted: {{ comment.date }}
-							<p>Comment: {{ comment.body }}</p></li>
+							<p>Comment: <i>{{ comment.body }}</i></p></li>
 
 					{% endfor %}
 				{% endif %}

@@ -2,6 +2,14 @@ from django.shortcuts import render
 from .models import MovieItem, CommentItem
 from django.http import HttpResponseRedirect, HttpResponse
 import requests
+from django.db.models import Count
+from django.template.defaulttags import register
+
+
+@register.filter
+def get_item(dictionary, key):
+	for elt in dictionary:
+		return elt.get(key)
 
 # omdapi.com API key
 api_key = 'apikey=8a9a1640'
@@ -10,13 +18,19 @@ api_key = 'apikey=8a9a1640'
 def handle_movies(request):
 	all_movies = MovieItem.objects.all()
 
-	try:
-		all_movies = all_movies.order_by(request.POST['sorting_way'])
-	except Exception:
-		pass
-
 	# request from external api on POST
 	if request.method == 'POST':
+		try:
+			sorting_way = request.POST['sorting_way']
+			if sorting_way == 'top_comments':
+				all_movies = all_movies.annotate(comments_count=Count('commentitem')).order_by('comments_count').reverse()
+			else:
+				all_movies = all_movies.order_by(sorting_way)
+
+			return render(request, "movies.html", {'all_movies': all_movies})
+		except Exception:
+			pass
+
 		title_to_add = request.POST['movie_title']
 
 		response = requests.get(f'http://www.omdbapi.com/?t={title_to_add}&{api_key}')
@@ -32,13 +46,14 @@ def handle_movies(request):
 						title=json_data['Title'],
 						year=json_data['Year'],
 						director=json_data['Director'],
+						poster=json_data['Poster'],
 						full_data=json_data,
 					)
 				new_movie.save()
 		except Exception:
 			return HttpResponse("<h2>No such movie in DB</h2>")
 		
-		#return render(request, "added.html", {'new_movie': json_data})
+		return render(request, "added.html", {'new_movie': json_data})
 
 	return render(request, "movies.html", {'all_movies': all_movies})
 
@@ -94,17 +109,13 @@ def top_movies(request):
 
 	if len(all_movies) == 0:
 		return HttpResponse("<h3>Error: no movies in this range</h3>")
-	all_movies = all_movies.order_by('-commentitem')
+
+	all_movies = all_movies.annotate(comments_count=Count('commentitem')).order_by('comments_count').reverse()
 
 	curr_comments = all_movies[0].commentitem_set.count()  # define max nr of comments for first place
-	curr_movie = None  # define first movie as null to avoid duplicates
 	top_array = []
 	rank = 1
 	for movie in all_movies:
-		if movie == curr_movie:
-			continue
-		curr_movie = movie
-
 		nr_comments = movie.commentitem_set.count()
 		if nr_comments < curr_comments:
 			curr_comments = nr_comments
